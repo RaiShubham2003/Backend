@@ -22,12 +22,12 @@ const registerUser = asyncHandler( async (req, res) =>{
     console.log("email: ", email);
 
     if (
-        [ fullName, username, email, password ].some( (field) => feild?.trim === "" )
+        [ fullName, username, email, password ].some( (field) => field?.trim === "" )
     ){
         throw new ApiError(400, "All feilds are reqiured")
     }
 
-    const existedUser = User.findOne({
+    const existedUser = await User.findOne({
         $or : [{username},{email}]
     })
 
@@ -51,16 +51,16 @@ const registerUser = asyncHandler( async (req, res) =>{
         throw new ApiError(400, "Avatar is required")
     }
 
-    const user = User.create({
+    const user = await User.create({
         fullName,
         avatar : avatar.url,
         coverImage: coverImage?.url || "",
-        username : username.toLowerCase,
+        username : username.toLowerCase(),
         email,
         password
     })
     
-    const createdUser = User.findById(user._id).select( " -password -refreshToken " )
+    const createdUser = await User.findById(user._id).select( " -password -refreshToken " )
 
     if (!createdUser){
         throw ApiError(403, "Something went wrong in User creation")
