@@ -4,7 +4,7 @@ import connectDB from "./db/index.js";
 
 dotenv.config();
 
-console.log(process.env.MONGODB_URI);
+// console.log(process.env.MONGODB_URI);
 
 connectDB()
 .then(() => {

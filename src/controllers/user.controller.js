@@ -17,7 +17,7 @@ const generateAccessToken_and_refereshToken = async (userId) => {
 
         await user.save({ validateBeforeSave : false })
 
-        return { accessToken, refreshToken}
+        return { accessToken, refreshToken }
 
 
     } catch (error) {
@@ -112,15 +112,17 @@ const loginUser = asyncHandler( async (req, res ) => {
     // generate access token and refreh token
     // send cookie
 
-    const { username, email, password } = req.body()
+    const { username, email, password } = req.body
+    console.log(password)
 
-    if ( !username || !email ){
+    if ( !(username || email) ){
         throw new ApiError( 400, "Username or Email is required")
     }
 
     const user = await User.findOne({
         $or : [{username}, {email}]
     })
+    console.log(user.password)
 
     if ( !user ){
         throw new ApiError(409, "User is with this email or username is not exist")
@@ -143,14 +145,14 @@ const loginUser = asyncHandler( async (req, res ) => {
 
     const options = {
         httpOnly : true,
-        secure : true
+        secure : false
     }
 
 
     return res
     .status(200)
-    .cookie( " refreshToken ", refreshToken, options )
-    .cookie( " accessToken ", accessToken, options )
+    .cookie( "refreshToken", refreshToken, options )
+    .cookie( "accessToken", accessToken, options )
     .json(
         new ApiResponse(
             200,
